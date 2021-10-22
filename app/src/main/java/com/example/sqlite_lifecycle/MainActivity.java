@@ -1,13 +1,18 @@
 package com.example.sqlite_lifecycle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import android.content.DialogInterface;
+import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -35,27 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i(TAG, "OnCreate");
 
-        recyclerView = findViewById(R.id.RecyclerView);
-        add_button = findViewById(R.id.add_button);
-        add_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Activity2.class);
-                startActivity(intent);
-            }
-        });
 
-        myDB = new MyDatabaseHelper(MainActivity.this);
-        _id = new ArrayList<>();
-        fr_name = new ArrayList<>();
-        fr_address = new ArrayList<>();
-        fr_age = new ArrayList<>();
-
-        customAdapter = new CustomAdapter(MainActivity.this, _id, fr_name, fr_address, fr_age);
-        storeDataInArrays();
-
-        recyclerView.setAdapter(customAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
     }
 
     void storeDataInArrays(){
@@ -83,6 +68,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "onResume");
+
+        recyclerView = findViewById(R.id.RecyclerView);
+        add_button = findViewById(R.id.add_button);
+        add_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, Activity2.class);
+                startActivity(intent);
+            }
+        });
+
+        myDB = new MyDatabaseHelper(MainActivity.this);
+        _id = new ArrayList<>();
+        fr_name = new ArrayList<>();
+        fr_address = new ArrayList<>();
+        fr_age = new ArrayList<>();
+
+        customAdapter = new CustomAdapter(MainActivity.this, _id, fr_name, fr_address, fr_age);
+        storeDataInArrays();
+
+        recyclerView.setAdapter(customAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+
     }
 
     @Override
@@ -107,5 +115,48 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         Log.i(TAG, "onRestart");
+
+
+
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.my_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId()==R.id.delete_all){
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Delete all?");
+            builder.setMessage("Are you sure you want to delete all data?");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    myDB.deleteAllData();
+                    finish();
+                    overridePendingTransition(0, 0);
+                    startActivity(getIntent());
+                    overridePendingTransition(0, 0);
+
+
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+            builder.create().show();
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

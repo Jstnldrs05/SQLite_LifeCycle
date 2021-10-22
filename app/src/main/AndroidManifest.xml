@@ -10,6 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SQLite_LifeCycle">
         <activity
+            android:name=".UpdateActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"/>
+        <activity
             android:name=".Activity2"
             android:exported="false"
             android:label="Add Friends"

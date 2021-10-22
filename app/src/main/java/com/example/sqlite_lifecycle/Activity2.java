@@ -2,6 +2,7 @@ package com.example.sqlite_lifecycle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,6 +34,10 @@ public class Activity2 extends AppCompatActivity {
             myDB.addfriends(name_input.getText().toString().trim(),
                             address_input.getText().toString().trim(),
                             Integer.parseInt(age_input.getText().toString().trim()));
+
+            Intent intent = new Intent(Activity2.this, MainActivity.class);
+            startActivity(intent);
+
         });
 
     }
